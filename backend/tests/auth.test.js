@@ -9,7 +9,7 @@ afterAll(async () => {
     )
   `)
   await pool.query("DELETE FROM users WHERE email LIKE 'test_%@regulai.test'")
-  await pool.end()
+  // pool.end() géré par setup.test.js (dernier alphabétiquement)
 })
 
 describe('POST /api/auth/register', () => {
