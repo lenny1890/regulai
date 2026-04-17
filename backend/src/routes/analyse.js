@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { requireAuth } from '../middleware/auth.js'
-import { checkAndIncrementQuota } from '../middleware/quota.js'
+import { checkQuota } from '../middleware/quota.js'
 import { callMlService } from '../services/mlService.js'
 import { query } from '../db.js'
 
@@ -16,7 +16,7 @@ function validateAnalyseInput(req, res, next) {
   next()
 }
 
-analyseRouter.post('/analyse', requireAuth, validateAnalyseInput, checkAndIncrementQuota, async (req, res) => {
+analyseRouter.post('/analyse', requireAuth, validateAnalyseInput, checkQuota, async (req, res) => {
   const { text, channel } = req.body
 
   try {
@@ -47,19 +47,27 @@ analyseRouter.post('/analyse', requireAuth, validateAnalyseInput, checkAndIncrem
 })
 
 analyseRouter.get('/analyses', requireAuth, async (req, res) => {
-  const result = await query(
-    `SELECT id, channel, score, ml_probability, risks_json, created_at
-     FROM analyses WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50`,
-    [req.userId]
-  )
-  res.json(result.rows)
+  try {
+    const result = await query(
+      `SELECT id, channel, score, ml_probability, risks_json, created_at
+       FROM analyses WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50`,
+      [req.userId]
+    )
+    res.json(result.rows)
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
 })
 
 analyseRouter.get('/analyses/:id', requireAuth, async (req, res) => {
-  const result = await query(
-    'SELECT * FROM analyses WHERE id = $1 AND user_id = $2',
-    [req.params.id, req.userId]
-  )
-  if (!result.rows[0]) return res.status(404).json({ error: 'Analyse introuvable' })
-  res.json(result.rows[0])
+  try {
+    const result = await query(
+      'SELECT * FROM analyses WHERE id = $1 AND user_id = $2',
+      [req.params.id, req.userId]
+    )
+    if (!result.rows[0]) return res.status(404).json({ error: 'Analyse introuvable' })
+    res.json(result.rows[0])
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
 })

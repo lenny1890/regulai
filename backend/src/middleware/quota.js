@@ -2,7 +2,7 @@ import { query } from '../db.js'
 
 const PLAN_LIMITS = { free: 3, starter: 30, pro: Infinity }
 
-export async function checkAndIncrementQuota(req, res, next) {
+export async function checkQuota(req, res, next) {
   const result = await query(
     'SELECT plan, analyses_count_month FROM users WHERE id = $1',
     [req.userId]
