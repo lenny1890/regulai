@@ -1,0 +1,40 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, field_validator
+import os
+from dotenv import load_dotenv
+from claude_client import call_claude
+
+load_dotenv()
+app = FastAPI()
+
+VALID_CHANNELS = {"email", "sms", "push", "social", "influenceur"}
+
+class AnalyseRequest(BaseModel):
+    text: str
+    channel: str
+
+    @field_validator("text")
+    @classmethod
+    def text_not_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError("text cannot be empty")
+        return v.strip()
+
+    @field_validator("channel")
+    @classmethod
+    def channel_valid(cls, v):
+        if v not in VALID_CHANNELS:
+            raise ValueError(f"channel must be one of {VALID_CHANNELS}")
+        return v
+
+@app.post("/analyse")
+async def analyse(req: AnalyseRequest):
+    try:
+        result = await call_claude(req.text, req.channel)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
