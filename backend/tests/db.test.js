@@ -1,8 +1,6 @@
 import { pool, query } from '../src/db.js'
 
-afterAll(async () => {
-  await pool.end()
-})
+// pool.end() est géré par auth.test.js (dernier fichier exécuté avec --runInBand)
 
 describe('database connection', () => {
   it('connects and queries', async () => {
