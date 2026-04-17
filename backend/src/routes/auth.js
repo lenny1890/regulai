@@ -51,27 +51,42 @@ authRouter.post('/register', async (req, res) => {
   }
 })
 
+const DUMMY_HASH = '$2a$12$invalide.hash.pour.timing.attack.protection000000000000'
+
 authRouter.post('/login', async (req, res) => {
   const { email, password } = req.body
-  const result = await query('SELECT id, password_hash FROM users WHERE email = $1', [email?.toLowerCase().trim()])
-  const user = result.rows[0]
-  if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-    return res.status(401).json({ error: 'Identifiants incorrects' })
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email et mot de passe requis' })
   }
-  const accessToken = signAccess(user.id)
-  await createRefreshToken(user.id, res)
-  res.json({ accessToken })
+  try {
+    const result = await query('SELECT id, password_hash FROM users WHERE email = $1', [email.toLowerCase().trim()])
+    const user = result.rows[0]
+    const hashToCompare = user ? user.password_hash : DUMMY_HASH
+    const match = await bcrypt.compare(password, hashToCompare)
+    if (!user || !match) {
+      return res.status(401).json({ error: 'Identifiants incorrects' })
+    }
+    const accessToken = signAccess(user.id)
+    await createRefreshToken(user.id, res)
+    res.json({ accessToken })
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
 })
 
 authRouter.post('/refresh', async (req, res) => {
   const token = req.cookies?.refreshToken
   if (!token) return res.status(401).json({ error: 'Refresh token manquant' })
-  const hash = crypto.createHash('sha256').update(token).digest('hex')
-  const result = await query(
-    'SELECT user_id FROM refresh_tokens WHERE token_hash = $1 AND revoked = false AND expires_at > NOW()',
-    [hash]
-  )
-  if (!result.rows[0]) return res.status(401).json({ error: 'Token invalide ou expiré' })
-  const accessToken = signAccess(result.rows[0].user_id)
-  res.json({ accessToken })
+  try {
+    const hash = crypto.createHash('sha256').update(token).digest('hex')
+    const result = await query(
+      'SELECT user_id FROM refresh_tokens WHERE token_hash = $1 AND revoked = false AND expires_at > NOW()',
+      [hash]
+    )
+    if (!result.rows[0]) return res.status(401).json({ error: 'Token invalide ou expiré' })
+    const accessToken = signAccess(result.rows[0].user_id)
+    res.json({ accessToken })
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' })
+  }
 })
