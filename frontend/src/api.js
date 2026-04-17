@@ -8,7 +8,7 @@ export function setToken(t) {
   else localStorage.removeItem('accessToken')
 }
 
-async function authFetch(path, options = {}) {
+async function authFetch(path, options = {}, retried = false) {
   const res = await fetch(`${BASE}${path}`, {
     ...options,
     credentials: 'include',
@@ -19,18 +19,18 @@ async function authFetch(path, options = {}) {
     },
   })
 
-  if (res.status === 401) {
+  if (res.status === 401 && !retried) {
     const refresh = await fetch(`${BASE}/api/auth/refresh`, {
       method: 'POST', credentials: 'include',
     })
     if (refresh.ok) {
       const { accessToken: newToken } = await refresh.json()
       setToken(newToken)
-      return authFetch(path, options)
-    } else {
-      setToken(null)
-      window.location.href = '/login'
+      return authFetch(path, options, true)
     }
+    setToken(null)
+    window.location.href = '/login'
+    return new Response(null, { status: 401 })
   }
   return res
 }

@@ -13,12 +13,17 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const res = await api.login(email, password)
-    const data = await res.json()
-    setLoading(false)
-    if (!res.ok) return setError(data.error || 'Erreur de connexion')
-    setToken(data.accessToken)
-    navigate('/')
+    try {
+      const res = await api.login(email, password)
+      const data = await res.json()
+      if (!res.ok) return setError(data.error || 'Erreur de connexion')
+      setToken(data.accessToken)
+      navigate('/')
+    } catch {
+      setError('Erreur réseau — réessayez')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

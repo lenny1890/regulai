@@ -19,14 +19,19 @@ export default function Analyse() {
     setLoading(true)
     setError('')
     setResult(null)
-    const res = await api.analyse(text, channel)
-    const data = await res.json()
-    setLoading(false)
-    if (!res.ok) {
-      if (res.status === 402) return setError('Quota mensuel atteint — passez au plan Starter pour continuer')
-      return setError(data.error || "Erreur lors de l'analyse")
+    try {
+      const res = await api.analyse(text, channel)
+      const data = await res.json()
+      if (!res.ok) {
+        if (res.status === 402) return setError('Quota mensuel atteint — passez au plan Starter pour continuer')
+        return setError(data.error || "Erreur lors de l'analyse")
+      }
+      setResult(data)
+    } catch {
+      setError('Erreur réseau — réessayez')
+    } finally {
+      setLoading(false)
     }
-    setResult(data)
   }
 
   return (

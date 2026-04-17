@@ -5,8 +5,11 @@ export default function SplitView({ original, corrected }) {
 
   function handleCopy() {
     navigator.clipboard.writeText(corrected)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+      .then(() => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      })
+      .catch(() => {})
   }
 
   return (

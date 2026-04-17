@@ -8,7 +8,7 @@ export default function ScoreGauge({ score }) {
         <svg viewBox="0 0 36 36" className="w-20 h-20 -rotate-90">
           <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1e3a4a" strokeWidth="3" />
           <circle cx="18" cy="18" r="15.9" fill="none" stroke={color} strokeWidth="3"
-            strokeDasharray={`${score} 100`} strokeLinecap="round" />
+            strokeDasharray={`${(score / 100) * 99.9} 99.9`} strokeLinecap="round" />
         </svg>
         <span className="absolute inset-0 flex items-center justify-center text-xl font-bold text-white">
           {score}

@@ -14,12 +14,17 @@ export default function Register() {
     if (password.length < 8) return setError('Mot de passe : 8 caractères minimum')
     setLoading(true)
     setError('')
-    const res = await api.register(email, password)
-    const data = await res.json()
-    setLoading(false)
-    if (!res.ok) return setError(data.error || "Erreur lors de l'inscription")
-    setToken(data.accessToken)
-    navigate('/')
+    try {
+      const res = await api.register(email, password)
+      const data = await res.json()
+      if (!res.ok) return setError(data.error || "Erreur lors de l'inscription")
+      setToken(data.accessToken)
+      navigate('/')
+    } catch {
+      setError('Erreur réseau — réessayez')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
