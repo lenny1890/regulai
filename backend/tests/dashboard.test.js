@@ -30,5 +30,8 @@ describe('GET /api/dashboard', () => {
     expect(res.body).toHaveProperty('kpis')
     expect(res.body).toHaveProperty('history')
     expect(res.body.kpis.total_analyses).toBe(0)
+    expect(res.body.kpis.avg_score).toBe(0)
+    expect(res.body.kpis.savings_estimate).toBe(0)
+    expect(res.body.history).toEqual([])
   })
 })
