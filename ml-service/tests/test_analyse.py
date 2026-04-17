@@ -37,3 +37,10 @@ async def test_analyse_rejects_empty_text():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
         res = await client.post('/analyse', json={'text': '', 'channel': 'email'})
     assert res.status_code == 422
+
+@pytest.mark.asyncio
+async def test_analyse_handles_claude_error():
+    with patch('main.call_claude', new_callable=AsyncMock, side_effect=ValueError("Réponse Claude non-JSON")):
+        async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+            res = await client.post('/analyse', json={'text': 'test', 'channel': 'email'})
+    assert res.status_code == 500

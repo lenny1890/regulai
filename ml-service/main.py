@@ -1,8 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, field_validator
 import os
+import logging
 from dotenv import load_dotenv
 from claude_client import call_claude
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 app = FastAPI()
@@ -33,7 +36,8 @@ async def analyse(req: AnalyseRequest):
         result = await call_claude(req.text, req.channel)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Erreur lors de l'analyse Claude")
+        raise HTTPException(status_code=500, detail="Erreur interne lors de l'analyse")
 
 @app.get("/health")
 def health():
