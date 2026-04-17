@@ -2,10 +2,14 @@
   "name": "regulai",
   "private": true,
   "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:ml": "cd ml-service && uvicorn main:app --reload --port 8001",
     "test:backend": "cd backend && npm test",
     "test:ml": "cd ml-service && pytest -v"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
   }
 }
