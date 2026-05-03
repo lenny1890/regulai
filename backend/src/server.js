@@ -8,6 +8,7 @@ import { dashboardRouter } from './routes/dashboard.js'
 import { billingRouter } from './routes/billing.js'
 
 export const app = express()
+app.set('trust proxy', 1)
 
 const allowedOrigins = process.env.FRONTEND_URL
   ? [process.env.FRONTEND_URL]
