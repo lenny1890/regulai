@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { createHash } from 'crypto'
 import { requireAuth } from '../middleware/auth.js'
+import { checkQuota } from '../middleware/quota.js'
 import { callMlService } from '../services/mlService.js'
 import { query } from '../db.js'
 
@@ -19,7 +20,7 @@ function validateAnalyseInput(req, res, next) {
   next()
 }
 
-analyseRouter.post('/analyse', requireAuth, validateAnalyseInput, async (req, res) => {
+analyseRouter.post('/analyse', requireAuth, validateAnalyseInput, checkQuota, async (req, res) => {
   const { text, channel } = req.body
   const textHash = createHash('sha256').update(text.trim()).digest('hex')
 
