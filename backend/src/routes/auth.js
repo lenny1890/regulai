@@ -80,11 +80,15 @@ authRouter.post('/refresh', async (req, res) => {
   try {
     const hash = crypto.createHash('sha256').update(token).digest('hex')
     const result = await query(
-      'SELECT user_id FROM refresh_tokens WHERE token_hash = $1 AND revoked = false AND expires_at > NOW()',
+      'SELECT id, user_id FROM refresh_tokens WHERE token_hash = $1 AND revoked = false AND expires_at > NOW()',
       [hash]
     )
     if (!result.rows[0]) return res.status(401).json({ error: 'Token invalide ou expiré' })
-    const accessToken = signAccess(result.rows[0].user_id)
+    const { id, user_id } = result.rows[0]
+    // Rotation : invalide l'ancien token avant d'en émettre un nouveau
+    await query('UPDATE refresh_tokens SET revoked = true WHERE id = $1', [id])
+    const accessToken = signAccess(user_id)
+    await createRefreshToken(user_id, res)
     res.json({ accessToken })
   } catch {
     res.status(500).json({ error: 'Erreur serveur' })
