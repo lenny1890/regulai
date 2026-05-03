@@ -51,11 +51,7 @@ export async function ensureAuth() {
       if (refresh.ok) {
         const { accessToken: t } = await refresh.json()
         setToken(t)
-        return
       }
-    } catch { /* ignore */ }
-    try {
-      await login('demo@regulai.local', 'demo1234')
     } catch { /* ignore */ }
   })()
   await _ensureAuthPromise
