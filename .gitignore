@@ -4,6 +4,10 @@
 venv/
 __pycache__/
 *.pyc
+*.log
 dist/
 .vercel/
 .DS_Store
+.gstack/
+coverage/
+.pytest_cache/

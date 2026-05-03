@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "node src/server.js",
+    "migrate": "node src/migrate.js",
+    "start": "node src/migrate.js && node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest --runInBand"
   },
@@ -29,6 +30,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0",
     "stripe": "^22.0.2"

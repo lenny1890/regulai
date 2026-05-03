@@ -11,10 +11,10 @@ export default function ChannelSelector({ value, onChange }) {
     <div className="flex flex-wrap gap-2">
       {CHANNELS.map(c => (
         <button key={c.id} type="button" onClick={() => onChange(c.id)}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-colors ${
+          className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all ${
             value === c.id
-              ? 'bg-brand-dark border-brand-cyan text-brand-cyan'
-              : 'bg-brand-dark border-brand-border text-slate-400 hover:border-slate-500'
+              ? 'bg-brand-cyan border-brand-cyan text-white shadow-sm'
+              : 'border-brand-border text-brand-text-secondary hover:border-slate-400 hover:text-brand-text bg-white'
           }`}>
           {c.label}
         </button>

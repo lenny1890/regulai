@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 app = FastAPI()
 
-VALID_CHANNELS = {"email", "sms", "push", "social", "influenceur"}
+VALID_CHANNELS = {"email", "sms", "push", "social", "influenceur", "landing", "publicite", "autre"}
 
 class AnalyseRequest(BaseModel):
     text: str

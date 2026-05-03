@@ -1,20 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-navy: #0a1520;
-  --color-brand-dark: #0d1f2d;
-  --color-brand-border: #1e3a4a;
-  --color-brand-green: #99e1c3;
-  --color-brand-cyan: #23B8D2;
-  --color-brand-amber: #f59e0b;
+  --color-primary: oklch(0.46 0.19 268);
+  --color-primary-hover: oklch(0.40 0.19 268);
+  --color-primary-light: oklch(0.94 0.04 268);
+  --color-page-bg: oklch(0.976 0.006 268);
+  --color-surface: oklch(1 0 0);
+  --color-surface-raised: oklch(0.995 0.003 268);
+  --color-border: oklch(0.89 0.012 268);
+  --color-border-strong: oklch(0.78 0.025 268);
+  --color-text: oklch(0.14 0.025 268);
+  --color-muted: oklch(0.52 0.018 268);
+  --color-faint: oklch(0.72 0.012 268);
+  --color-info-bg: oklch(0.97 0.02 268);
+  --color-info-border: oklch(0.85 0.06 268);
 }
 
 body {
   margin: 0;
-  background-color: #0a1520;
+  background-color: oklch(0.976 0.006 268);
+  color: oklch(0.14 0.025 268);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
   width: 100%;
   min-height: 100svh;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes stepPop {
+  0%   { transform: scale(0.85); opacity: 0; }
+  60%  { transform: scale(1.06); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: oklch(0.78 0.025 268); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(0.65 0.035 268); }
+
+@media print {
+  header, .no-print { display: none !important; }
+  body { background: white; }
+  .print-section { break-inside: avoid; }
 }
