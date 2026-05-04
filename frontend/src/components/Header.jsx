@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { logout } from '../api'
 
 const NAV = [
-  { path: '/',           label: 'Analyser' },
+  { path: '/app',        label: 'Analyser' },
   { path: '/historique', label: 'Historique' },
   { path: '/dashboard',  label: 'Tableau de bord' },
   { path: '/pricing',    label: 'Tarifs' },

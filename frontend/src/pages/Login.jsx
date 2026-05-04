@@ -15,7 +15,7 @@ export default function Login() {
     try {
       await login(email, password)
       toast.success('Connexion réussie')
-      navigate('/')
+      navigate('/app')
     } catch (err) {
       toast.error(err.message)
     } finally {

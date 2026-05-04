@@ -16,7 +16,7 @@ export default function Register() {
     try {
       await register(email, password)
       toast.success('Compte créé — bienvenue !')
-      navigate('/')
+      navigate('/app')
     } catch (err) {
       toast.error(err.message)
     } finally {
